@@ -16,12 +16,23 @@ router.get('/', function (req, res, next) {
 
 
 router.get('/:id', function (req, res) {
-  console.log(jwt.verify(req.get("Authorization").substring(7), auth.secret));
+  try {
+    var decoded = jwt.verify(req.get("Authorization").substring(7), auth.secret);
+    console.log(decoded);
+    res.status(200)
+      .json(
+        decoded
+      )
+  } catch (err) {
+    console.log(err);
+    res.status(401)
+      .json(
+        {
+          "status": 401, "msg": "make sure you have the header: Authorization with value of 'Bearer <token>'"
+        }
+      )
+  }
 
-  res.status(200)
-    .json(
-      jwt.verify(req.get("Authorization").substring(7), auth.secret)
-    )
 });
 
 
